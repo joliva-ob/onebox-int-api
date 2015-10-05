@@ -1,0 +1,261 @@
+FORMAT: 1A
+HOST: http://api.oneboxtm.com/
+
+# onebox-int-api
+
+Onebox internal API to communicate rest front end with the 3rd party integrations plantform.
+Falta añadir hypermedia con los links a las paginaciones y posibles siguientes acciones.
+Falta añadir media-type collection+json a todas las respuestas y verificar que se cumple con el estándar.
+Falta endpoint /orders (GET, POST, PATCH, DELETE) + filtros de paging, dates y status.
+Falta endpoint /purchases (GET, POST, PATCH, DELETE) + filtros de paging, dates y status.
+Falta añadir promociones al flujo de reserva y endpoint para descubrirlas.
+Falta enpoint /tickets + purchase_id, filtros de paging, dates y status
+Falta endpoint /venues donde entregar info estática de svg, imagenes, mapeos de zonas, price zones, sectores, localidades.
+
+
+## List all the events for the given filter and client requestor. [/pintapi/v1.0/events{?available,start_date,end_date,page,status,tracking_id,span_id,channel_id}]
+
+### List Events [GET]
+
++ Parameters
+    + available (optional, text) ... To return only the ones with availability
+        + `true`
+        + `false`
+    + start_date (optional, date) ... Filter by starting date (`2015-08-05T08:40:51.620Z`)
+    + end_date (optional, date) ... Filter by final date
+    + page (optional, number) ... Paginate response to the given page number
+    + status (optional, text) ... To Return the events whether they are blocked or on sale.
+        + `ON_SALE`
+        + `BLOCKED`
+    + tracking_id (optional, text) ... Unique identifier of the original onebox request
+    + span_id (optional, text) ... Tracking information about the sequence of requests within the onebox platform.
+    + channel_id (required, text) ... Unique identifier for the client requestor.
+
++ Response 200 (application/json)
+
+        [
+            {
+                "tracking_id": "4jk32j4l2k3j4lk23j4lk23j4",
+                "span_id": "fjksldjfklsj23k4jk-jkjkl23j4--k-jl23j4lk3j",
+                "channel_id": "web-punto-com",
+                "events": [
+                    {
+                        "id": "898989",
+                        "name": "La Gran Ilusión",
+                        "from_date": "2015-08-05T08:40:51.620Z",
+                        "to_date": "2015-08-05T08:40:51.620Z"
+                    },
+                    {
+                        "id": "898981",
+                        "name": "Futbol FCB",
+                        "from_date": "2015-08-05T08:40:51.620Z",
+                        "to_date": "2015-08-05T08:40:51.620Z"
+                    }
+                ]
+            }
+        ]
+
+## Get the details for a given event id. [/pintapi/v1.0/events{?event_id,tracking_id,span_id,channel_id}]
+
+### Event details [GET]
+
++ Parameters
+    + event_id (required, text) ... Unique identifier for the requested event
+    + tracking_id (optional, text) ... Unique identifier of the original onebox request
+    + span_id (optional, text) ... Tracking information about the sequence of requests within the onebox platform.
+    + channel_id (required, text) ... Unique identifier for the client requestor.
+    
++ Response 200 (application/json)
+
+        [
+            {
+                "tracking_id": "4jk32j4l2k3j4lk23j4lk23j4",
+                "span_id": "fjksldjfklsj23k4jk-jkjkl23j4--k-jl23j4lk3j",
+                "channel_id": "web-punto-com",
+                "events": [
+                    {
+                        "id": "898989",
+                        "name": "La Gran Ilusión",
+                        "from_date": "2015-08-05T08:40:51.620Z",
+                        "to_date": "2015-08-05T08:40:51.620Z",
+                        "description": "lorem ipsum dolor imen tranquen meten.",
+                        "total_availability": 234
+                    }
+                ]
+            }
+        ]
+
+## List all the sessions for the given filter, event and client requestor. [/pintapi/v1.0/events/{event_id}/sessions{?available,start_date,end_date,page,status,tracking_id,span_id,channel_id}]
+
+### List Sessions [GET]
+
++ Parameters
+    + event_id (required, number) ... Unique identifier of the event.
+    + available (optional, text) ... To return only the ones with availability
+        + `true`
+        + `false`
+    + start_date (optional, date) ... Filter by starting date (`2015-08-05T08:40:51.620Z`)
+    + end_date (optional, date) ... Filter by final date
+    + page (optional, number) ... Paginate response to the given page number
+    + status (optional, text) ... To Return the events whether they are blocked or on sale.
+        + `ON_SALE`
+        + `BLOCKED`
+    + tracking_id (optional, text) ... Unique identifier of the original onebox request
+    + span_id (optional, text) ... Tracking information about the sequence of requests within the onebox platform.
+    + channel_id (required, text) ... Unique identifier for the client requestor.
+
++ Response 200 (application/json)
+
+        [
+            {
+                "tracking_id": "4jk32j4l2k3j4lk23j4lk23j4",
+                "span_id": "fjksldjfklsj23k4jk-jkjkl23j4--k-jl23j4lk3j",
+                "channel_id": "web-punto-com",
+                "events": [
+                {
+                        "id": "898989",
+                        "name": "La Gran Ilusión",
+                        "sessions": [
+                        {
+                            {
+                                "id": 432432,
+                                "date": "2015-08-05T08:40:51.620Z",
+                                "name": "Primera sesion - 8:40"
+                            },
+                            {
+                                "id": 432433,
+                                "date": "2015-08-05T10:40:51.620Z",
+                                "name": "Segunda sesion - 8:40"
+                            }   
+                        }]
+                    }
+                ]
+            }
+        ]
+        
+## Session details for the given filter, session and client requestor. [/pintapi/v1.0/events/{event_id}/sessions/{session_id}{?tracking_id,span_id,channel_id}]
+
+### Session details [GET]
+
++ Parameters
+    + event_id (required, number) ... Unique identifier of the event.
+    + session_id (required, number) ... Unique identifier of the requested session.
+    + tracking_id (optional, text) ... Unique identifier of the original onebox request
+    + span_id (optional, text) ... Tracking information about the sequence of requests within the onebox platform.
+    + channel_id (required, text) ... Unique identifier for the client requestor.
+
++ Response 200 (application/json)
+
+        [
+            {
+                "tracking_id": "4jk32j4l2k3j4lk23j4lk23j4",
+                "span_id": "fjksldjfklsj23k4jk-jkjkl23j4--k-jl23j4lk3j",
+                "channel_id": "web-punto-com",
+                "events": [
+                {
+                        "id": "898989",
+                        "name": "La Gran Ilusión",
+                        "sessions": [
+                        {
+                            {
+                                "id": 432432,
+                                "date": "2015-08-05T08:40:51.620Z",
+                                "name": "Primera sesion - 8:40"
+                                "seats":[
+                                    {
+                                        "id": 12342,
+                                        "row": 45,
+                                        "location": 3,
+                                        "zone": "grandstand M",
+                                        "section": "vip",
+                                        "price_zone": 234,
+                                        "available": true,
+                                        "prices":[
+                                            {
+                                                "id": 4322,
+                                                "name": "adult",
+                                                "price": 234.45
+                                            },
+                                            {
+                                                "id": 4323,
+                                                "name": "child",
+                                                "price": 100.00
+                                            }
+                                        ],
+                                        "available_promotions": "none",
+                                        "applied_promotions": "none"
+                                    },
+                                    {
+                                        "id": 12343,
+                                        "row": 46,
+                                        "location": 1,
+                                        "zone": "grandstand K",
+                                        "section": "regular",
+                                        "price_zone": 235,
+                                        "available": true,
+                                        "prices":[
+                                            {
+                                                "id": 4326,
+                                                "name": "adult",
+                                                "price": 134.45
+                                            },
+                                            {
+                                                "id": 4328,
+                                                "name": "child",
+                                                "price": 50.00
+                                            }
+                                        ],
+                                        "available_promotions": "none",
+                                        "applied_promotions": "none"
+                                    }
+                                ]
+                            }  
+                        }]
+                    }
+                ]
+            }
+        ]
+
+### Create a New Question [POST]
+
+## You may create your own question using this action. It takes a JSON object containing a question and a collection of answers in the form of choices.
+
++ Request (application/json)
+
+        {
+            "question": "Favourite programming language?",
+            "choices": [
+                "Swift",
+                "Python",
+                "Objective-C",
+                "Ruby"
+            ]
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /questions/2
+
+    + Body
+
+            {
+                "question": "Favourite programming language?",
+                "published_at": "2015-08-05T08:40:51.620Z",
+                "choices": [
+                    {
+                        "choice": "Swift",
+                        "votes": 0
+                    }, {
+                        "choice": "Python",
+                        "votes": 0
+                    }, {
+                        "choice": "Objective-C",
+                        "votes": 0
+                    }, {
+                        "choice": "Ruby",
+                        "votes": 0
+                    }
+                ]
+            }
